@@ -88,6 +88,112 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+
+  // Scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+
+  // Observe all elements with animation classes
+  const animatedElements = document.querySelectorAll('.animate-on-scroll');
+  animatedElements.forEach(el => observer.observe(el));
+});
+
+// Copyright year update
+document.addEventListener('DOMContentLoaded', function() {
+  const copyrightYear = document.getElementById('copyright-year');
+  if (copyrightYear) {
+    copyrightYear.textContent = new Date().getFullYear();
+  }
+});
+
+// Hero background image crossfade
+document.addEventListener('DOMContentLoaded', function() {
+  const heroBgs = document.querySelectorAll('.hero-bg');
+  let currentBg = 0;
+  
+  if (heroBgs.length > 1) {
+    setInterval(() => {
+      heroBgs[currentBg].style.opacity = '0';
+      currentBg = (currentBg + 1) % heroBgs.length;
+      heroBgs[currentBg].style.opacity = '1';
+    }, 10000);
+  }
+});
+
+// Projects image slider
+document.addEventListener('DOMContentLoaded', function() {
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.slider-dots button');
+  const prevBtn = document.querySelector('.projects .slider-ctrl.prev');
+  const nextBtn = document.querySelector('.projects .slider-ctrl.next');
+  
+  let currentSlide = 0;
+  let autoplayInterval;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('is-active', i === index);
+    });
+    
+    dots.forEach((dot, i) => {
+      dot.setAttribute('aria-selected', i === index);
+    });
+    
+    currentSlide = index;
+  }
+
+  function nextSlide() {
+    const next = (currentSlide + 1) % slides.length;
+    showSlide(next);
+  }
+
+  function prevSlide() {
+    const prev = (currentSlide - 1 + slides.length) % slides.length;
+    showSlide(prev);
+  }
+
+  // Event listeners
+  if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+  if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+  
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => showSlide(index));
+  });
+
+  // Autoplay
+  function startAutoplay() {
+    autoplayInterval = setInterval(nextSlide, 5000);
+  }
+
+  function stopAutoplay() {
+    clearInterval(autoplayInterval);
+  }
+
+  // Start autoplay and handle hover
+  if (slides.length > 1) {
+    startAutoplay();
+    
+    const slider = document.querySelector('.slider');
+    if (slider) {
+      slider.addEventListener('mouseenter', stopAutoplay);
+      slider.addEventListener('mouseleave', startAutoplay);
+    }
+  }
+
+  // Show first slide initially
+  if (slides.length > 0) {
+    showSlide(0);
+  }
 });
 
 
